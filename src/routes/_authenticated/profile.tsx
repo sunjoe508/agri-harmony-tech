@@ -76,10 +76,13 @@ function ProfilePage() {
       const path = `${p.id}/${Date.now()}-${file.name}`;
       const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
       if (upErr) throw upErr;
-      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-      const { error } = await supabase.from("profiles").update({ avatar_url: data.publicUrl }).eq("id", p.id);
+      const { data: signed, error: sErr } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(path, 60 * 60 * 24 * 365);
+      if (sErr) throw sErr;
+      const { error } = await supabase.from("profiles").update({ avatar_url: signed.signedUrl }).eq("id", p.id);
       if (error) throw error;
-      setP({ ...p, avatar_url: data.publicUrl });
+      setP({ ...p, avatar_url: signed.signedUrl });
       toast.success("Avatar updated");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Upload failed");
