@@ -16,12 +16,14 @@ export async function isAdmin(userId: string): Promise<boolean> {
   return !!data;
 }
 
+import type { Json } from "@/integrations/supabase/types";
+
 export async function logActivity(
   userId: string,
   action: string,
   entity?: string,
   entityId?: string,
-  metadata?: Record<string, unknown>,
+  metadata?: Json,
 ) {
   await supabase.from("activity_logs").insert({
     user_id: userId,
