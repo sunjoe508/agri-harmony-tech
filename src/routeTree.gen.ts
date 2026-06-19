@@ -14,6 +14,11 @@ import { Route as AdminAuthRouteImport } from './routes/admin-auth'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminTicketsRouteImport } from './routes/admin/tickets'
+import { Route as AdminMapRouteImport } from './routes/admin/map'
+import { Route as AdminDatabaseRouteImport } from './routes/admin/database'
+import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AuthenticatedWeatherRouteImport } from './routes/_authenticated/weather'
 import { Route as AuthenticatedTicketsRouteImport } from './routes/_authenticated/tickets'
 import { Route as AuthenticatedSensorsRouteImport } from './routes/_authenticated/sensors'
@@ -49,6 +54,31 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminTicketsRoute = AdminTicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMapRoute = AdminMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminDatabaseRoute = AdminDatabaseRouteImport.update({
+  id: '/database',
+  path: '/database',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthenticatedWeatherRoute = AuthenticatedWeatherRouteImport.update({
   id: '/weather',
@@ -109,7 +139,7 @@ const AuthenticatedAssistantRoute = AuthenticatedAssistantRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/admin-auth': typeof AdminAuthRoute
   '/auth': typeof AuthRoute
   '/assistant': typeof AuthenticatedAssistantRoute
@@ -123,10 +153,15 @@ export interface FileRoutesByFullPath {
   '/sensors': typeof AuthenticatedSensorsRoute
   '/tickets': typeof AuthenticatedTicketsRoute
   '/weather': typeof AuthenticatedWeatherRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/database': typeof AdminDatabaseRoute
+  '/admin/map': typeof AdminMapRoute
+  '/admin/tickets': typeof AdminTicketsRoute
+  '/admin/users': typeof AdminUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/admin-auth': typeof AdminAuthRoute
   '/auth': typeof AuthRoute
   '/assistant': typeof AuthenticatedAssistantRoute
@@ -140,12 +175,17 @@ export interface FileRoutesByTo {
   '/sensors': typeof AuthenticatedSensorsRoute
   '/tickets': typeof AuthenticatedTicketsRoute
   '/weather': typeof AuthenticatedWeatherRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/database': typeof AdminDatabaseRoute
+  '/admin/map': typeof AdminMapRoute
+  '/admin/tickets': typeof AdminTicketsRoute
+  '/admin/users': typeof AdminUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/admin-auth': typeof AdminAuthRoute
   '/auth': typeof AuthRoute
   '/_authenticated/assistant': typeof AuthenticatedAssistantRoute
@@ -159,6 +199,11 @@ export interface FileRoutesById {
   '/_authenticated/sensors': typeof AuthenticatedSensorsRoute
   '/_authenticated/tickets': typeof AuthenticatedTicketsRoute
   '/_authenticated/weather': typeof AuthenticatedWeatherRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/database': typeof AdminDatabaseRoute
+  '/admin/map': typeof AdminMapRoute
+  '/admin/tickets': typeof AdminTicketsRoute
+  '/admin/users': typeof AdminUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,6 +223,11 @@ export interface FileRouteTypes {
     | '/sensors'
     | '/tickets'
     | '/weather'
+    | '/admin/dashboard'
+    | '/admin/database'
+    | '/admin/map'
+    | '/admin/tickets'
+    | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -195,6 +245,11 @@ export interface FileRouteTypes {
     | '/sensors'
     | '/tickets'
     | '/weather'
+    | '/admin/dashboard'
+    | '/admin/database'
+    | '/admin/map'
+    | '/admin/tickets'
+    | '/admin/users'
   id:
     | '__root__'
     | '/'
@@ -213,12 +268,17 @@ export interface FileRouteTypes {
     | '/_authenticated/sensors'
     | '/_authenticated/tickets'
     | '/_authenticated/weather'
+    | '/admin/dashboard'
+    | '/admin/database'
+    | '/admin/map'
+    | '/admin/tickets'
+    | '/admin/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AdminRouteRoute: typeof AdminRouteRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   AdminAuthRoute: typeof AdminAuthRoute
   AuthRoute: typeof AuthRoute
 }
@@ -259,6 +319,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/tickets': {
+      id: '/admin/tickets'
+      path: '/tickets'
+      fullPath: '/admin/tickets'
+      preLoaderRoute: typeof AdminTicketsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/map': {
+      id: '/admin/map'
+      path: '/map'
+      fullPath: '/admin/map'
+      preLoaderRoute: typeof AdminMapRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/database': {
+      id: '/admin/database'
+      path: '/database'
+      fullPath: '/admin/database'
+      preLoaderRoute: typeof AdminDatabaseRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_authenticated/weather': {
       id: '/_authenticated/weather'
@@ -371,10 +466,30 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AdminRouteRouteChildren {
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminDatabaseRoute: typeof AdminDatabaseRoute
+  AdminMapRoute: typeof AdminMapRoute
+  AdminTicketsRoute: typeof AdminTicketsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminDatabaseRoute: AdminDatabaseRoute,
+  AdminMapRoute: AdminMapRoute,
+  AdminTicketsRoute: AdminTicketsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AdminRouteRoute: AdminRouteRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   AdminAuthRoute: AdminAuthRoute,
   AuthRoute: AuthRoute,
 }

@@ -55,7 +55,7 @@ function AdminTickets() {
     };
   }, []);
 
-  async function update(id: string, patch: Partial<Ticket>) {
+  async function update(id: string, patch: { status?: typeof STATUSES[number]; admin_response?: string | null }) {
     const { error } = await supabase.from("support_tickets").update(patch).eq("id", id);
     if (error) toast.error(error.message);
     else toast.success("Updated");
@@ -71,7 +71,7 @@ function AdminTickets() {
               <CardTitle className="font-display text-base">{t.subject}</CardTitle>
               <div className="flex items-center gap-2">
                 <Badge variant="outline">{t.status.replace("_", " ")}</Badge>
-                <Select value={t.status} onValueChange={(v) => update(t.id, { status: v })}>
+                <Select value={t.status} onValueChange={(v) => update(t.id, { status: v as typeof STATUSES[number] })}>
                   <SelectTrigger className="h-8 w-36">
                     <SelectValue />
                   </SelectTrigger>
