@@ -553,6 +553,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      regenerate_demo_data: { Args: never; Returns: Json }
     }
     Enums: {
       admin_role: "admin" | "super_admin" | "support"
