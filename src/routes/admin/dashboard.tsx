@@ -20,6 +20,43 @@ function AdminDashboard() {
     tickets: number;
     crops: number;
   } | null>(null);
+  const [reseeding, setReseeding] = useState(false);
+
+  const loadStats = async () => {
+    const [users, sensors, tx, budgets, tickets, crops] = await Promise.all([
+      supabase.from("profiles").select("id", { count: "exact", head: true }),
+      supabase.from("sensors").select("id", { count: "exact", head: true }),
+      supabase.from("financial_transactions").select("id", { count: "exact", head: true }),
+      supabase.from("budgets").select("id", { count: "exact", head: true }),
+      supabase
+        .from("support_tickets")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["open", "in_progress"]),
+      supabase.from("farm_records").select("id", { count: "exact", head: true }),
+    ]);
+    setStats({
+      users: users.count ?? 0,
+      sensors: sensors.count ?? 0,
+      transactions: tx.count ?? 0,
+      budgets: budgets.count ?? 0,
+      tickets: tickets.count ?? 0,
+      crops: crops.count ?? 0,
+    });
+  };
+
+  const regenerate = async () => {
+    if (reseeding) return;
+    if (!window.confirm("Wipe and regenerate demo seed data for the 3 demo farmers?")) return;
+    setReseeding(true);
+    const { error } = await supabase.rpc("regenerate_demo_data" as never);
+    setReseeding(false);
+    if (error) {
+      toast.error("Failed to regenerate demo data", { description: error.message });
+      return;
+    }
+    toast.success("Demo data regenerated");
+    void loadStats();
+  };
 
   useEffect(() => {
     void (async () => {
