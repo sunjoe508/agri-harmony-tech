@@ -16,6 +16,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminTicketsRouteImport } from './routes/admin/tickets'
+import { Route as AdminSecurityRouteImport } from './routes/admin/security'
+import { Route as AdminRealtimeRouteImport } from './routes/admin/realtime'
 import { Route as AdminMapRouteImport } from './routes/admin/map'
 import { Route as AdminDatabaseRouteImport } from './routes/admin/database'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
@@ -63,6 +65,16 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
 const AdminTicketsRoute = AdminTicketsRouteImport.update({
   id: '/tickets',
   path: '/tickets',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSecurityRoute = AdminSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminRealtimeRoute = AdminRealtimeRouteImport.update({
+  id: '/realtime',
+  path: '/realtime',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminMapRoute = AdminMapRouteImport.update({
@@ -156,6 +168,8 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/database': typeof AdminDatabaseRoute
   '/admin/map': typeof AdminMapRoute
+  '/admin/realtime': typeof AdminRealtimeRoute
+  '/admin/security': typeof AdminSecurityRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/admin/users': typeof AdminUsersRoute
 }
@@ -178,6 +192,8 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/database': typeof AdminDatabaseRoute
   '/admin/map': typeof AdminMapRoute
+  '/admin/realtime': typeof AdminRealtimeRoute
+  '/admin/security': typeof AdminSecurityRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/admin/users': typeof AdminUsersRoute
 }
@@ -202,6 +218,8 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/database': typeof AdminDatabaseRoute
   '/admin/map': typeof AdminMapRoute
+  '/admin/realtime': typeof AdminRealtimeRoute
+  '/admin/security': typeof AdminSecurityRoute
   '/admin/tickets': typeof AdminTicketsRoute
   '/admin/users': typeof AdminUsersRoute
 }
@@ -226,6 +244,8 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/database'
     | '/admin/map'
+    | '/admin/realtime'
+    | '/admin/security'
     | '/admin/tickets'
     | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
@@ -248,6 +268,8 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/database'
     | '/admin/map'
+    | '/admin/realtime'
+    | '/admin/security'
     | '/admin/tickets'
     | '/admin/users'
   id:
@@ -271,6 +293,8 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/database'
     | '/admin/map'
+    | '/admin/realtime'
+    | '/admin/security'
     | '/admin/tickets'
     | '/admin/users'
   fileRoutesById: FileRoutesById
@@ -332,6 +356,20 @@ declare module '@tanstack/react-router' {
       path: '/tickets'
       fullPath: '/admin/tickets'
       preLoaderRoute: typeof AdminTicketsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/security': {
+      id: '/admin/security'
+      path: '/security'
+      fullPath: '/admin/security'
+      preLoaderRoute: typeof AdminSecurityRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/realtime': {
+      id: '/admin/realtime'
+      path: '/realtime'
+      fullPath: '/admin/realtime'
+      preLoaderRoute: typeof AdminRealtimeRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/map': {
@@ -470,6 +508,8 @@ interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminDatabaseRoute: typeof AdminDatabaseRoute
   AdminMapRoute: typeof AdminMapRoute
+  AdminRealtimeRoute: typeof AdminRealtimeRoute
+  AdminSecurityRoute: typeof AdminSecurityRoute
   AdminTicketsRoute: typeof AdminTicketsRoute
   AdminUsersRoute: typeof AdminUsersRoute
 }
@@ -478,6 +518,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminDatabaseRoute: AdminDatabaseRoute,
   AdminMapRoute: AdminMapRoute,
+  AdminRealtimeRoute: AdminRealtimeRoute,
+  AdminSecurityRoute: AdminSecurityRoute,
   AdminTicketsRoute: AdminTicketsRoute,
   AdminUsersRoute: AdminUsersRoute,
 }

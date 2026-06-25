@@ -9,7 +9,14 @@ export const Route = createFileRoute("/_authenticated/weather")({
   component: WeatherPage,
 });
 
-type Row = { id: string; location: string | null; temperature_c: number | null; humidity_pct: number | null; conditions: string | null; recorded_at: string };
+type Row = {
+  id: string;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  fetched_at: string;
+  payload: Record<string, unknown> | null;
+};
 
 function WeatherPage() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -17,11 +24,21 @@ function WeatherPage() {
 
   useEffect(() => {
     void (async () => {
-      const { data } = await supabase.from("weather_data").select("*").order("recorded_at", { ascending: false }).limit(10);
-      setRows((data ?? []) as Row[]);
+      const { data } = await supabase
+        .from("weather_data")
+        .select("id,location,latitude,longitude,fetched_at,payload")
+        .order("fetched_at", { ascending: false })
+        .limit(10);
+      setRows((data ?? []) as unknown as Row[]);
       setLoading(false);
     })();
   }, []);
+
+  const pick = (p: Row["payload"], k: string): string | number | null => {
+    if (!p || typeof p !== "object") return null;
+    const v = (p as Record<string, unknown>)[k];
+    return typeof v === "string" || typeof v === "number" ? v : null;
+  };
 
   return (
     <div className="space-y-6">
@@ -36,18 +53,23 @@ function WeatherPage() {
             <p className="text-sm text-muted-foreground">No weather data yet. A scheduled job will populate this table.</p>
           ) : (
             <ul className="divide-y divide-border/40">
-              {rows.map((r) => (
-                <li key={r.id} className="flex items-center justify-between py-3">
-                  <div>
-                    <div className="font-medium">{r.location ?? "—"}</div>
-                    <div className="text-xs text-muted-foreground">{new Date(r.recorded_at).toLocaleString()} · {r.conditions ?? ""}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-display text-xl">{r.temperature_c ?? "—"}°C</div>
-                    <div className="text-xs text-muted-foreground">{r.humidity_pct ?? "—"}% humidity</div>
-                  </div>
-                </li>
-              ))}
+              {rows.map((r) => {
+                const temp = pick(r.payload, "temperature_c") ?? pick(r.payload, "temp");
+                const hum = pick(r.payload, "humidity_pct") ?? pick(r.payload, "humidity");
+                const cond = pick(r.payload, "conditions") ?? pick(r.payload, "summary");
+                return (
+                  <li key={r.id} className="flex items-center justify-between py-3">
+                    <div>
+                      <div className="font-medium">{r.location ?? "—"}</div>
+                      <div className="text-xs text-muted-foreground">{new Date(r.fetched_at).toLocaleString()} {cond ? `· ${cond}` : ""}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-display text-xl">{temp ?? "—"}{temp != null ? "°C" : ""}</div>
+                      <div className="text-xs text-muted-foreground">{hum != null ? `${hum}% humidity` : "—"}</div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>
