@@ -13,6 +13,8 @@ import {
   Database,
   LogOut,
   Menu,
+  Lock,
+  Radio,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,6 +24,8 @@ const NAV = [
   { to: "/admin/tickets", label: "Tickets", icon: LifeBuoy },
   { to: "/admin/map", label: "Farmers Map", icon: Map },
   { to: "/admin/database", label: "Database", icon: Database },
+  { to: "/admin/security", label: "Security", icon: Lock },
+  { to: "/admin/realtime", label: "Realtime", icon: Radio },
 ];
 
 export function AdminShell({ children }: { children: ReactNode }) {
