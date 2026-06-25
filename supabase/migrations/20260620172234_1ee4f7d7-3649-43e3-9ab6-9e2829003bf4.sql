@@ -3,8 +3,8 @@
 DO $$
 DECLARE
   admin_uid uuid := 'a0000000-0000-0000-0000-000000000001';
-  admin_email text := 'admin@agrismart.app';
-  admin_pass text := 'AgriAdmin!2026';
+  admin_email text := 'joemunga329@gmail.com';
+  admin_pass text := 'Joe@11596';
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM auth.users WHERE id = admin_uid) THEN
     INSERT INTO auth.users (
