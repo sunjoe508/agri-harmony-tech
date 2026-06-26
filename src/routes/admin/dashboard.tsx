@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Users, Activity, Wallet, LifeBuoy, Database as DbIcon, Sprout, RefreshCw } from "lucide-react";
+import { regenerateDemoData } from "@/lib/admin-demo.functions";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard — AgriSmart" }] }),
