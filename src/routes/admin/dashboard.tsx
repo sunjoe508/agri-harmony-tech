@@ -49,6 +49,18 @@ function AdminDashboard() {
     if (reseeding) return;
     if (!window.confirm("Wipe and regenerate demo seed data for the 3 demo farmers?")) return;
     setReseeding(true);
+    try {
+      await regenerateDemoData();
+      setReseeding(false);
+      toast.success("Demo data regenerated");
+      void loadStats();
+    } catch (e) {
+      setReseeding(false);
+      const msg = e instanceof Error ? e.message : "Request failed";
+      toast.error("Failed to regenerate demo data", { description: msg });
+    }
+    return;
+    // legacy direct rpc retained below for reference (unreachable)
     const { error } = await supabase.rpc("regenerate_demo_data" as never);
     setReseeding(false);
     if (error) {
