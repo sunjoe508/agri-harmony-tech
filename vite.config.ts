@@ -7,37 +7,40 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { VitePWA } from "vite-plugin-pwa";
 
+const pwaPlugins = VitePWA({
+  registerType: "autoUpdate",
+  injectRegister: null, // we register from our guarded wrapper
+  devOptions: { enabled: false },
+  filename: "sw.js",
+  manifest: false, // we ship our own manifest.webmanifest
+  workbox: {
+    navigateFallback: "/",
+    navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],
+    runtimeCaching: [
+      {
+        urlPattern: ({ url }) =>
+          url.pathname.startsWith("/~oauth") ||
+          url.hostname.includes("supabase.co") ||
+          url.hostname.includes("lovable.app"),
+        handler: "NetworkOnly",
+      },
+      {
+        urlPattern: ({ request }) => request.destination === "document",
+        handler: "NetworkFirst",
+        options: { cacheName: "html-cache" },
+      },
+    ],
+  },
+}).map((plugin) => ({
+  ...plugin,
+  applyToEnvironment: (environment: { name: string }) => environment.name === "client",
+}));
+
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
   vite: {
-    plugins: [
-      VitePWA({
-        registerType: "autoUpdate",
-        injectRegister: null, // we register from our guarded wrapper
-        devOptions: { enabled: false },
-        filename: "sw.js",
-        manifest: false, // we ship our own manifest.webmanifest
-        workbox: {
-          navigateFallback: "/",
-          navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],
-          runtimeCaching: [
-            {
-              urlPattern: ({ url }) =>
-                url.pathname.startsWith("/~oauth") ||
-                url.hostname.includes("supabase.co") ||
-                url.hostname.includes("lovable.app"),
-              handler: "NetworkOnly",
-            },
-            {
-              urlPattern: ({ request }) => request.destination === "document",
-              handler: "NetworkFirst",
-              options: { cacheName: "html-cache" },
-            },
-          ],
-        },
-      }),
-    ],
+    plugins: [pwaPlugins],
   },
 });
