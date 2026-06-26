@@ -59,16 +59,6 @@ function AdminDashboard() {
       const msg = e instanceof Error ? e.message : "Request failed";
       toast.error("Failed to regenerate demo data", { description: msg });
     }
-    return;
-    // legacy direct rpc retained below for reference (unreachable)
-    const { error } = await supabase.rpc("regenerate_demo_data" as never);
-    setReseeding(false);
-    if (error) {
-      toast.error("Failed to regenerate demo data", { description: error.message });
-      return;
-    }
-    toast.success("Demo data regenerated");
-    void loadStats();
   };
 
   useEffect(() => {
