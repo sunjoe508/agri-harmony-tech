@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Users, Activity, Wallet, LifeBuoy, Database as DbIcon, Sprout, RefreshCw } from "lucide-react";
+import { regenerateDemoData } from "@/lib/admin-demo.functions";
 
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard — AgriSmart" }] }),
@@ -48,14 +49,16 @@ function AdminDashboard() {
     if (reseeding) return;
     if (!window.confirm("Wipe and regenerate demo seed data for the 3 demo farmers?")) return;
     setReseeding(true);
-    const { error } = await supabase.rpc("regenerate_demo_data" as never);
-    setReseeding(false);
-    if (error) {
-      toast.error("Failed to regenerate demo data", { description: error.message });
-      return;
+    try {
+      await regenerateDemoData();
+      setReseeding(false);
+      toast.success("Demo data regenerated");
+      void loadStats();
+    } catch (e) {
+      setReseeding(false);
+      const msg = e instanceof Error ? e.message : "Request failed";
+      toast.error("Failed to regenerate demo data", { description: msg });
     }
-    toast.success("Demo data regenerated");
-    void loadStats();
   };
 
   useEffect(() => {
